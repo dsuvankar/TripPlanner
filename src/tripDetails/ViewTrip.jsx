@@ -6,14 +6,22 @@ import { toast } from "sonner";
 import InfoSection from "./components/InfoSection";
 import HotelRecommendation from "./components/HotelRecommendation";
 import Itinerary from "./components/Itinerary";
+import { useNavigate } from "react-router-dom";
 
 const ViewTrip = () => {
   const [tripData, setTripData] = useState([]);
   const { tripId } = useParams();
+  const navigate = useNavigate();
+
+  const user = localStorage.getItem("user");
 
   useEffect(() => {
     tripId && getTripData();
   }, [tripId]);
+
+  if (!user) {
+    navigate("/");
+  }
 
   const getTripData = async () => {
     const docRef = doc(db, "TripPlannerAI", tripId);

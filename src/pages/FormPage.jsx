@@ -27,8 +27,8 @@ import Loading from "./Loading";
 import { useNavigate } from "react-router-dom";
 
 const FormPage = () => {
-  const [place, setPlace] = useState();
-  const [formData, setFormData] = useState([]);
+  const [place, setPlace] = useState(null);
+  const [formData, setFormData] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -53,6 +53,7 @@ const FormPage = () => {
       setOpenDialog(true);
       return;
     }
+
     if (
       formData?.location &&
       formData?.noOfDays &&
@@ -61,8 +62,8 @@ const FormPage = () => {
     ) {
       toast({
         variant: "success",
-        title: "All are alright",
-        description: "Let's go",
+        title: "All fields are filled",
+        description: "Generating your trip plan...",
       });
 
       setLoading(true);
@@ -78,18 +79,27 @@ const FormPage = () => {
 
       console.log(FINAL_PROMPT);
 
-      const result = await chatSession.sendMessage(FINAL_PROMPT);
-      const tripDetailsText = await result?.response?.text();
-      console.log("--", tripDetailsText);
-      setLoading(false);
-      SaveAiTrip(tripDetailsText);
+      try {
+        const result = await chatSession.sendMessage(FINAL_PROMPT);
+        const tripDetailsText = await result?.response?.text();
+        console.log("--", tripDetailsText);
+        SaveAiTrip(tripDetailsText);
+      } catch (error) {
+        console.error("Error generating trip plan:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to generate trip. Please try again.",
+        });
+        setLoading(false);
+      }
     } else {
       toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Please Fill all the Field",
+        title: "Missing fields",
+        description: "Please fill all the fields.",
       });
-      console.log("please fill all the form");
+      console.log("Please fill all the fields in the form.");
     }
   };
 
@@ -97,8 +107,8 @@ const FormPage = () => {
     setLoading(true);
     const user = JSON.parse(localStorage.getItem("user"));
     const docID = Date.now().toString();
-    let tripData;
 
+    let tripData;
     try {
       tripData = JSON.parse(TripDetails);
     } catch (error) {
@@ -130,6 +140,7 @@ const FormPage = () => {
     }
 
     setLoading(false);
+    window.location.reload();
   };
 
   const GetUserProfile = (tokenInfo) => {
@@ -139,7 +150,7 @@ const FormPage = () => {
         {
           headers: {
             Authorization: `Bearer ${tokenInfo?.access_token}`,
-            Accept: "Application/json",
+            Accept: "application/json",
           },
         }
       )
@@ -161,25 +172,23 @@ const FormPage = () => {
         <div>
           <div className="mb-9 sm:px-10 md:px-32 lg:px-56 xl:px-72 mt-10">
             <h2 className="font-bold text-3xl">
-              Your Trip Plan is getting Generated 🥳
+              Your Trip Plan is being generated 🥳
             </h2>
-            <p className="text-xl mt-3 text-gray-500">
-              Kindly have a patience 🤗
-            </p>
+            <p className="text-xl mt-3 text-gray-500">Please be patient 🤗</p>
           </div>
           <Loading />
         </div>
       ) : (
-        <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 mt-10 ">
-          <div className="">
-            <h2 className="font-bold text-3xl">What&apos;s Your Plan </h2>
+        <div className="sm:px-10 md:px-32 lg:px-56 xl:px-72 mt-10">
+          <div>
+            <h2 className="font-bold text-3xl">What&apos;s Your Plan?</h2>
             <p className="text-xl mt-3 text-gray-500">
-              Here put some info for our AI
+              Provide some information for our AI
             </p>
           </div>
           {/* Form */}
           <div className="mt-20 flex flex-col gap-8">
-            <div className="">
+            <div>
               <h2 className="text-xl font-medium my-3">
                 Select Your Destination
               </h2>
@@ -197,18 +206,18 @@ const FormPage = () => {
 
             <div>
               <h2 className="text-xl font-medium my-3">
-                How many days you are planning to stay
+                How many days are you planning to stay?
               </h2>
               <Input
-                placeholder={"Ex. 3 Days"}
+                placeholder="Ex. 3 Days"
                 type="number"
                 onChange={(e) => handleInputChange("noOfDays", e.target.value)}
               />
             </div>
 
-            <div className="">
+            <div>
               <h2 className="text-xl font-medium my-3">
-                What is your Budget for this trip?
+                What is your budget for this trip?
               </h2>
               <div className="grid grid-cols-3 gap-5 mt-5">
                 {SelectBudgetOptions.map((item, index) => (
@@ -216,7 +225,8 @@ const FormPage = () => {
                     key={index}
                     onClick={() => handleInputChange("budget", item.title)}
                     className={`p-4 rounded-lg border cursor-pointer hover:shadow-lg ${
-                      formData?.budget == item.title && `border-black shadow-lg`
+                      formData?.budget === item.title &&
+                      `border-black shadow-lg`
                     }`}>
                     <h2 className="text-3xl">{item.icon}</h2>
                     <h2 className="font-bold text-lg mt-1">{item.title}</h2>
@@ -226,9 +236,9 @@ const FormPage = () => {
               </div>
             </div>
 
-            <div className="">
+            <div>
               <h2 className="text-xl font-medium my-3">
-                Who do you plan to travelling with?
+                Who do you plan to travel with?
               </h2>
               <div className="grid grid-cols-3 gap-5 mt-5">
                 {SelectTravelList.map((item, index) => (
@@ -236,7 +246,7 @@ const FormPage = () => {
                     key={index}
                     onClick={() => handleInputChange("noOfPeople", item.people)}
                     className={`p-4 rounded-lg border cursor-pointer hover:shadow-lg ${
-                      formData?.noOfPeople == item.people &&
+                      formData?.noOfPeople === item.people &&
                       `border-black shadow-lg`
                     }`}>
                     <h2 className="text-3xl">{item.icon}</h2>
@@ -255,9 +265,9 @@ const FormPage = () => {
               <DialogContent>
                 <DialogHeader>
                   <DialogDescription>
-                    <img src="/logo.svg" alt="" />
+                    <img src="/logo.svg" alt="Logo" />
                     <h2 className="font-bold text-lg mt-7">
-                      Please Login with your Google Account
+                      Please log in with your Google account
                     </h2>
                     <Button
                       onClick={logInWithGoogle}
