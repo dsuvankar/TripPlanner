@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigation } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/service/firebaseConfig";
+import TripsCard from "./TripsCard";
 
 const MyTrips = () => {
   const navigation = useNavigation();
@@ -18,22 +19,31 @@ const MyTrips = () => {
       return;
     }
 
-    prevTrips([]); //??
+    //??
 
     const q = query(
       collection(db, "TripPlannerAI"),
       where("userEmail", "==", user?.email)
     );
-
+    setPrivTrips([]);
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, " => ", doc.data());
 
       setPrivTrips((preVal) => [...preVal, doc.data()]);
     });
   };
-  return <div></div>;
+
+  return (
+    <div className=" mt-10 md:px-20  px-10">
+      <h2 className="font-bold text-2xl mb-5">My Trips</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+        {prevTrips.map((tripData, index) => (
+          <TripsCard key={index} tripData={tripData} />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default MyTrips;
