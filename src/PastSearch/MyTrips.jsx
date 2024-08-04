@@ -19,14 +19,14 @@ const MyTrips = () => {
       return;
     }
 
-    //??
-
     const q = query(
       collection(db, "TripPlannerAI"),
       where("userEmail", "==", user?.email)
     );
-    setPrivTrips([]);
+
     const querySnapshot = await getDocs(q);
+
+    setPrivTrips([]);
     querySnapshot.forEach((doc) => {
       console.log(doc.id, " => ", doc.data());
 
