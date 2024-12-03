@@ -13,10 +13,10 @@ const HotelCardInfo = ({ hotel }) => {
   const GetPlacePhoto = async () => {
     try {
       const data = {
-        textQuery: hotel?.name,
+        textQuery: hotel?.HotelName || hotel?.hotelName,
       };
       const result = await GetPlaceDetails(data);
-      console.log(result.data.places[0].photos[2].name);
+      console.log(result.data.places[0].photos[1].name);
 
       const PhotoUrl = PHOTO_REF_URL.replace(
         "{NAME}",
@@ -33,14 +33,18 @@ const HotelCardInfo = ({ hotel }) => {
   };
   return (
     <Link
-      to={`https://www.google.com/maps/search/?api=1&query=${hotel?.name} ${hotel?.address}`}
+      to={`https://www.google.com/maps/search/?api=1&query=${
+        hotel?.HotelName || hotel?.hotelName
+      } ${hotel?.HotelAddress}`}
       target="_blank">
       <div className="hover:scale-105 transition-all cursor-pointer">
         <img src={photoUrl} className="rounded-lg h-[300px] w-[300px]" />
-        <h2 className="font-medium">{hotel?.name}</h2>
-        <h2 className="text-xs text-gray-500">{hotel?.address}</h2>
-        <h2 className="text-sm ">{hotel?.price}</h2>
-        <h2 className="text-sm ">{hotel?.rating}</h2>
+        <h2 className="font-medium">{hotel?.HotelName || hotel?.hotelName}</h2>
+        <h2 className="text-xs text-gray-500">
+          {hotel?.HotelAddress || hotel?.hotelAddress}
+        </h2>
+        <h2 className="text-sm ">{hotel?.Price || hotel?.price}</h2>
+        <h2 className="text-sm ">{hotel?.Rating || hotel?.rating}</h2>
         {}
       </div>
     </Link>
