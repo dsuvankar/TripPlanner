@@ -42,9 +42,9 @@ Planning trips shouldn’t be stressful, and now it isn’t. With AI-generated i
 2. **Set Up Your Keys:**  
    
    ```bash
-   VITE_GOOGLE_PLACES_API_KEY=your-google-places-api-key  
-   VITE_GEMINI_AI_API_KEY=your-gemini-ai-api-key  
-   VITE_GOOGLE_AUTH_CLIENT_ID=your-google-auth-client-id  
+   VITE_GOOGLE_PLACES_API_KEY= 
+   VITE_GEMINI_AI_API_KEY=
+   VITE_GOOGLE_AUTH_API_KEY= 
    
 3. **🚀 Run It Locally**  
     
