@@ -4,6 +4,11 @@ import { Link } from "react-router-dom";
 
 const CardItem = ({ place }) => {
   const [photoUrl, setPhotoUrl] = useState();
+  const placeName = place?.PlaceName || place?.placeName || place?.name;
+  const placeDetails =
+    place.PlaceDetails || place.placeDetails || place?.details;
+  const timeToSpend =
+    place.TimeToTravel || place.timeToSpend || place?.time_to_spend;
   useEffect(() => {
     if (place) {
       GetPlacePhoto();
@@ -11,14 +16,14 @@ const CardItem = ({ place }) => {
   }, [place]);
 
   const GetPlacePhoto = async () => {
-    // if (!place?.PlaceName || ) {
-    //   console.error("Place name is missing.");
-    //   return;
-    // }
+    if (!placeName) {
+      console.error("Place name is missing or invalid.");
+      return;
+    }
 
     try {
       const data = {
-        textQuery: place.PlaceName || place.placeName,
+        textQuery: placeName,
       };
       const result = await GetPlaceDetails(data);
       const photoName = result?.data?.places?.[0]?.photos?.[3]?.name;
@@ -40,20 +45,14 @@ const CardItem = ({ place }) => {
   return (
     <Link
       target="_blank"
-      to={`https://www.google.com/maps/search/?api=1&query=${
-        place?.PlaceName || place?.placeName
-      }`}>
+      to={`https://www.google.com/maps/search/?api=1&query=${placeName}`}>
       <div className="border broder-black p-3 hover:scale-105 transition-all   shadow-sm  flex gap-3 rounded-xl">
         <img className="w-[150px] h-[150px] rounded-lg" src={photoUrl} alt="" />
         <div className="">
-          <h2 className="font-bold">{place.PlaceName || place.placeName}</h2>
-          <h2 className="text-sm">
-            {place.PlaceDetails || place.placeDetails}
-          </h2>
-          <h2 className="text-sm">Rating: {place.Rating || place.rating}</h2>
-          <h2 className="text-sm">
-            Duration: {place.TimeToTravel || place.timeToSpend}
-          </h2>
+          <h2 className="font-bold">{placeName}</h2>
+          <h2 className="text-sm">{placeDetails}</h2>
+          <h2 className="text-sm">Rating: {place.Rating || place.rating} ⭐</h2>
+          <h2 className="text-sm">Duration: {timeToSpend}</h2>
         </div>
       </div>
     </Link>
