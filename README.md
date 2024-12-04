@@ -4,7 +4,7 @@
 
 ---
 
-## 🔥 Features You’ll Love  
+## 🔥 Features: 
 
 - 🎯 **Vite Setup:** Fast and simple environment config  
 - 🗄️ **Firebase Backend:** Store all your data, safe and sound  
@@ -39,17 +39,12 @@ Planning trips shouldn’t be stressful, and now it isn’t. With AI-generated i
    git clone https://github.com/dsuvankar/TripPlanner.git  
    cd TripPlanner
 
-
-  
-
-
 2. **Set Up Your Keys:**  
    
    ```bash
    VITE_GOOGLE_PLACES_API_KEY=your-google-places-api-key  
    VITE_GEMINI_AI_API_KEY=your-gemini-ai-api-key  
    VITE_GOOGLE_AUTH_CLIENT_ID=your-google-auth-client-id  
-
    
 3. **🚀 Run It Locally**  
     
