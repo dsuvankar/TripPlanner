@@ -8,7 +8,10 @@ const CardItem = ({ place }) => {
   const placeDetails =
     place.PlaceDetails || place.placeDetails || place?.details;
   const timeToSpend =
-    place.TimeToTravel || place.timeToSpend || place?.time_to_spend;
+    place.TimeToTravel ||
+    place.timeToSpend ||
+    place?.time_to_spend ||
+    place?.travelTime;
   useEffect(() => {
     if (place) {
       GetPlacePhoto();
